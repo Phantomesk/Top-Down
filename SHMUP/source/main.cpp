@@ -149,14 +149,14 @@ struct Enemies
 			x = width*.5f;
 			xSpeed1 = -.1f;
 			ySpeed1 = -.1f;
-			xSpeed1 *= -2.f;
+			xSpeed1 *= -1.f;
 		}
 		if (x > iScreenWidth-(width*.5f))
 		{
 			x = iScreenWidth - (width*.5f);
 			xSpeed1 = -.1f;
 			ySpeed1 = -.1f;
-			xSpeed1 *= 2.f;
+			xSpeed1 *= 1.f;
 		}
 		if (y < (0 - (height*.5f)))
 		{
@@ -181,14 +181,15 @@ struct Enemies
 			x = width*.5f;
 			xSpeed2 = -.3f;
 			ySpeed2 = -.1f;
-			xSpeed2 *= -1.f;
+			xSpeed2 *= -2.f;
 		}
 		if (x > iScreenWidth - (width*.5f))
 		{
 			x = iScreenWidth - (width*.5f);
 			xSpeed2 = -.3f;
 			ySpeed2 = -.1f;
-			xSpeed2 *= 1.f;
+			xSpeed2 *= 2.f;
+			ySpeed2 *= 1.1f;
 		}
 		if (y < (0 - (height*.5f)))
 		{
