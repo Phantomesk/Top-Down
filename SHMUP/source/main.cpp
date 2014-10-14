@@ -7,7 +7,7 @@ const int iScreenHeight = 850;
 const int iScreenWidth = 700;
 
 char playerScore1[10];
-char highScore1[10];
+char highScore1[64];
 char playerLife[10];
 
 int playerScore = 000000000;
@@ -267,6 +267,8 @@ bool CollisionCheck(Collision box1, Collision box2)
 void UpdateMainMenu();
 void UpdateGamePlay();
 void UpdateHighScore();
+void readHighScore(const char* fileName);
+void writeHighScore(const char* fileName, int fileData);
 void UpdateGameOverScreen();
 
 int main( int argc, char* argv[] )
@@ -274,8 +276,6 @@ int main( int argc, char* argv[] )
     Initialise(iScreenWidth, iScreenHeight, false, "Top-Down");
     
     SetBackgroundColour(SColour(0, 0, 0, 255));
-
-	fstream file;
 
 	playerPlane.SetSize(75.f, 64.f);
 	enemyPlane1.SetSize(75.f, 64.f);
@@ -384,8 +384,8 @@ void UpdateGamePlay()
 		enemyPlane1.ySpeed1 *= .5f;
 		enemyPlane2.x = iScreenWidth*.6f;
 		enemyPlane2.y = (iScreenHeight - (enemyPlane2.height*.5f)) - 30;
-		enemyPlane2.xSpeed2 *= .15f;
-		enemyPlane2.ySpeed2 *= .15f;
+		enemyPlane2.xSpeed2 *= .5f;
+		enemyPlane2.ySpeed2 *= .5f;
 		if (playerLives == 0)
 		{
 			eCurrentState = GAMEOVER;
@@ -403,8 +403,8 @@ void UpdateGamePlay()
 		enemyPlane1.ySpeed1 *= .5f;
 		enemyPlane2.x = iScreenWidth*.6f;
 		enemyPlane2.y = (iScreenHeight - (enemyPlane1.height*.5f))-30;
-		enemyPlane2.xSpeed2 *= .15f;
-		enemyPlane2.ySpeed2 *= .15f;
+		enemyPlane2.xSpeed2 *= .5f;
+		enemyPlane2.ySpeed2 *= .5f;
 	}
 
 	if (CollisionCheck(fire.Planes, enemyPlane1.Planes))
@@ -422,9 +422,14 @@ void UpdateGamePlay()
 		playerScore += 20;
 		enemyPlane2.x = iScreenWidth * .6f;
 		enemyPlane2.y = (iScreenHeight - (enemyPlane2.height*.5f)) - 30;
-		enemyPlane2.xSpeed2 *= -1.01f;
-		enemyPlane2.ySpeed2 *= 1.01f;
+		enemyPlane2.xSpeed2 *= -1.05f;
+		enemyPlane2.ySpeed2 *= 1.05f;
 		fire.y = iScreenHeight + 200.f;
+	}
+
+	if (playerScore > highScore)
+	{
+		highScore = playerScore;
 	}
 
 	if (playerLives == 0)
@@ -505,6 +510,7 @@ void UpdateGameOverScreen()
 	if (IsKeyDown(GLFW_KEY_ENTER))
 	{
 		eCurrentState = GAMEPLAY;
+		playerScore = 000000000;
 	}
 	if (IsKeyDown('E'))
 	{
@@ -516,4 +522,22 @@ void UpdateGameOverScreen()
 	}
 
 	ClearScreen();
+}
+
+void readHighScore(const char* fileName)
+{
+	fstream fileStream;
+	fileStream.open(fileName, ios_base::in);
+	highScore1[64];
+	fileStream.getline(highScore1, 64);
+	cout << readHighScore << endl;
+}
+
+void writeHighScore(const char* fileName, int fileData)
+{
+	fstream fileStream;
+	fileStream.open(fileName, ios_base::out);
+	fileStream << fileData << endl;
+	fileStream.flush();
+	fileStream.close();
 }
