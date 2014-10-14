@@ -384,8 +384,8 @@ void UpdateGamePlay()
 		enemyPlane1.ySpeed1 *= .5f;
 		enemyPlane2.x = iScreenWidth*.6f;
 		enemyPlane2.y = (iScreenHeight - (enemyPlane2.height*.5f)) - 30;
-		enemyPlane2.xSpeed2 *= .15f;
-		enemyPlane2.ySpeed2 *= .15f;
+		enemyPlane2.xSpeed2 *= .5f;
+		enemyPlane2.ySpeed2 *= .5f;
 		if (playerLives == 0)
 		{
 			eCurrentState = GAMEOVER;
@@ -403,8 +403,8 @@ void UpdateGamePlay()
 		enemyPlane1.ySpeed1 *= .5f;
 		enemyPlane2.x = iScreenWidth*.6f;
 		enemyPlane2.y = (iScreenHeight - (enemyPlane1.height*.5f))-30;
-		enemyPlane2.xSpeed2 *= .15f;
-		enemyPlane2.ySpeed2 *= .15f;
+		enemyPlane2.xSpeed2 *= .5f;
+		enemyPlane2.ySpeed2 *= .5f;
 	}
 
 	if (CollisionCheck(fire.Planes, enemyPlane1.Planes))
@@ -483,6 +483,7 @@ void UpdateHighScore()
 
 		ClearScreen();
 	}
+
 	itoa(highScore, highScore1, 10);
 
 	ClearScreen();
