@@ -488,6 +488,7 @@ void UpdateHighScore()
 
 		ClearScreen();
 	}
+
 	itoa(highScore, highScore1, 10);
 
 	ClearScreen();
