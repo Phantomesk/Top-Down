@@ -11,7 +11,7 @@ char highScore1[64];
 char playerLife[10];
 
 int playerScore = 000000000;
-int highScore = 200;
+int highScore;
 int playerLives = 3;
 
 enum GAMESTATES
@@ -364,8 +364,6 @@ int main( int argc, char* argv[] )
     //Game Loop
     do
     {
-		void readHighScore(const char* fileName);
-
 		switch (eCurrentState)
 		{
 		case MAIN_MENU:
@@ -699,6 +697,9 @@ void readHighScore(const char* fileName)
 	fileStream.open(fileName, ios_base::in);
 	highScore1[64];
 	fileStream.getline(highScore1, 64);
+
+	atoi(highScore1);
+	highScore1[64] = highScore;
 }
 
 void writeHighScore(const char* fileName, int fileData)
