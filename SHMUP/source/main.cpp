@@ -11,7 +11,7 @@ char highScore1[64];
 char playerLife[10];
 
 int playerScore = 000000000;
-int highScore;
+int highScore = 200;
 int playerLives = 3;
 
 enum GAMESTATES
@@ -443,6 +443,8 @@ void UpdateGamePlay()
 {
 	float fDeltaTime = GetDeltaTime();
 
+	readHighScore("HighScore.txt");
+
 	playerPlane.Movement(fDeltaTime);
 	enemyPlane1.Movement1(fDeltaTime);
 	enemyPlane2.Movement2(fDeltaTime);
@@ -617,6 +619,8 @@ void UpdateHighScore()
 	enemyPlane2.xSpeed2 = .3f;
 	enemyPlane2.ySpeed2 = -.1f;
 
+	playerLives = 3;
+
 	DrawString("High score :", iScreenWidth*.35f, iScreenHeight*.55f);
 	readHighScore("HighScore.txt");
 	DrawString(highScore1, iScreenWidth*.575f, iScreenHeight*.55f);
@@ -626,6 +630,7 @@ void UpdateHighScore()
 	if (IsKeyDown('E'))
 	{
 		eCurrentState = MAIN_MENU;
+
 		ClearScreen();
 	}
 	if (IsKeyDown(GLFW_KEY_ENTER))
@@ -636,8 +641,8 @@ void UpdateHighScore()
 
 		ClearScreen();
 	}
-
-	itoa(highScore, highScore1, 10);
+	
+	itoa(highScore, highScore1, 64);
 
 	ClearScreen();
 }
@@ -697,9 +702,7 @@ void readHighScore(const char* fileName)
 	fileStream.open(fileName, ios_base::in);
 	highScore1[64];
 	fileStream.getline(highScore1, 64);
-
-	atoi(highScore1);
-	highScore1[64] = highScore;
+	highScore = atoi(highScore1);
 }
 
 void writeHighScore(const char* fileName, int fileData)
