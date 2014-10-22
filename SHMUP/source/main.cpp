@@ -304,8 +304,37 @@ struct Enemies
 		Planes.yMax = y + (height * .5f);
 	}
 };
-
 Enemies enemyPlane1, enemyPlane2, enemyPlane3, enemyPlane4;
+
+struct Background
+{
+	unsigned int iScreenID;
+	float x;
+	float y;
+	float ySpeed = -.1f;
+	float width;
+	float height;
+
+	void SetSize(float a_width, float a_height)
+	{
+		width = a_width;
+		height = a_height;
+	}
+
+	void SetPosition(float a_x, float a_y)
+	{
+		x = a_x;
+		y = a_y;
+	}
+
+	void Movement(float a_fDeltaTime)
+	{
+		MoveSprite(iScreenID, x, y);
+
+		y = (ySpeed + y);
+	}
+};
+Background screen1, screen2;
 
 bool CollisionCheck(Collision box1, Collision box2)
 {
@@ -322,6 +351,19 @@ bool CollisionCheck(Collision box1, Collision box2)
 		return true;
 	}
 	if (box1.xMax > box2.xMin && box1.yMin > box2.yMin && box1.xMax < box2.xMax && box1.yMin < box2.yMax)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool ScrollingScreen(Background screen1, Background screen2)
+{
+	if (screen1.y < 0)
+	{
+		return true;
+	}
+	if (screen2.y < 0)
 	{
 		return true;
 	}
@@ -347,12 +389,16 @@ int main( int argc, char* argv[] )
 	enemyPlane3.SetSize(75.f, 64.f);
 	enemyPlane4.SetSize(75.f, 64.f);
 	fire.SetSize(28.f, 28.f);
+	screen1.SetSize(iScreenWidth, iScreenHeight);
+	screen2.SetSize(iScreenWidth, iScreenHeight);
 
 	playerPlane.SetPosition(iScreenWidth * .5f, 150.f);
 	enemyPlane1.SetPosition(iScreenWidth*.5f, ((iScreenHeight - (enemyPlane1.height*.5f))-30));
 	enemyPlane2.SetPosition(iScreenWidth*.6f, ((iScreenHeight - (enemyPlane2.height * .5f))-30));
 	enemyPlane3.SetPosition(iScreenWidth*.7f, ((iScreenHeight - (enemyPlane3.height * .5f)) - 30));
 	enemyPlane4.SetPosition(iScreenWidth*.4f, ((iScreenHeight - (enemyPlane4.height * .5f)) - 30));
+	screen1.SetPosition(iScreenWidth*.5f, iScreenHeight*.5f);
+	screen2.SetPosition(iScreenWidth*.5f, (iScreenHeight*.5f + iScreenHeight));
 
 	playerPlane.iPlaneID = CreateSprite("./images/PlayerPlane.png", playerPlane.width, playerPlane.height, true);
 	enemyPlane1.iPlaneID = CreateSprite("./images/EnemyPlane1.png", enemyPlane1.width, enemyPlane1.height, true);
@@ -360,6 +406,8 @@ int main( int argc, char* argv[] )
 	enemyPlane3.iPlaneID = CreateSprite("./images/EnemyPlane3.png", enemyPlane2.width, enemyPlane2.height, true);
 	enemyPlane4.iPlaneID = CreateSprite("./images/EnemyPlane4.png", enemyPlane2.width, enemyPlane2.height, true);
 	fire.iBulletID = CreateSprite("./images/Bullet.png", fire.width, fire.height, true);
+	screen1.iScreenID = CreateSprite("./images/background.png", screen1.width, screen1.height, true);
+	screen2.iScreenID = CreateSprite("./images/background.png", screen1.width, screen1.height, true);
 
     //Game Loop
     do
@@ -388,8 +436,8 @@ int main( int argc, char* argv[] )
 		default:
 			break;
 		}
-		ClearScreen();
 
+		ClearScreen();
     }
 	
 	while(!FrameworkUpdate());
@@ -401,6 +449,8 @@ int main( int argc, char* argv[] )
 
 void UpdateMainMenu()
 {
+	readHighScore("HighScore.txt");
+
 	playerPlane.SetPosition(iScreenWidth * .5f, 150.f);
 	enemyPlane1.SetPosition(iScreenWidth*.5f, ((iScreenHeight - (enemyPlane1.height * .5f)) - 30));
 	enemyPlane2.SetPosition(iScreenWidth*.6f, ((iScreenHeight - (enemyPlane2.height * .5f)) - 30));
@@ -445,6 +495,8 @@ void UpdateGamePlay()
 
 	readHighScore("HighScore.txt");
 
+	screen1.Movement(fDeltaTime);
+	screen2.Movement(fDeltaTime);
 	playerPlane.Movement(fDeltaTime);
 	enemyPlane1.Movement1(fDeltaTime);
 	enemyPlane2.Movement2(fDeltaTime);
@@ -453,7 +505,8 @@ void UpdateGamePlay()
 	fire.Movement(fDeltaTime);
 	playerPlane.bulletFire();
 
-	if (CollisionCheck(enemyPlane1.Planes, playerPlane.Planes))
+
+	/*if (CollisionCheck(enemyPlane1.Planes, playerPlane.Planes))
 	{
 		playerLives -= 1;
 		playerPlane.x = iScreenWidth*.5f;
@@ -466,10 +519,14 @@ void UpdateGamePlay()
 		enemyPlane2.y = (iScreenHeight - (enemyPlane2.height*.5f)) - 30;
 		enemyPlane2.xSpeed2 *= .5f;
 		enemyPlane2.ySpeed2 *= .5f;
-		if (playerLives == 0)
-		{
-			eCurrentState = GAMEOVER;
-		}
+		enemyPlane3.x = iScreenWidth*.4f;
+		enemyPlane3.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
+		enemyPlane3.xSpeed3 *= .5f;
+		enemyPlane3.ySpeed3 *= .5f;
+		enemyPlane4.x = iScreenWidth*.7f;
+		enemyPlane4.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
+		enemyPlane4.xSpeed4 *= .5f;
+		enemyPlane4.ySpeed4 *= .5f;
 	}
 
 	if (CollisionCheck(enemyPlane2.Planes, playerPlane.Planes))
@@ -485,6 +542,14 @@ void UpdateGamePlay()
 		enemyPlane2.y = (iScreenHeight - (enemyPlane1.height*.5f))-30;
 		enemyPlane2.xSpeed2 *= .5f;
 		enemyPlane2.ySpeed2 *= .5f;
+		enemyPlane3.x = iScreenWidth*.4f;
+		enemyPlane3.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
+		enemyPlane3.xSpeed3 *= .5f;
+		enemyPlane3.ySpeed3 *= .5f;
+		enemyPlane4.x = iScreenWidth*.7f;
+		enemyPlane4.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
+		enemyPlane4.xSpeed4 *= .5f;
+		enemyPlane4.ySpeed4 *= .5f;
 	}
 
 	if (CollisionCheck(enemyPlane3.Planes, playerPlane.Planes))
@@ -531,7 +596,8 @@ void UpdateGamePlay()
 		enemyPlane4.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
 		enemyPlane4.xSpeed4 *= .5f;
 		enemyPlane4.ySpeed4 *= .5f;
-	}
+		if (playerLives == 0)
+	}*/
 
 	if (CollisionCheck(fire.Planes, enemyPlane1.Planes))
 	{
@@ -584,6 +650,20 @@ void UpdateGamePlay()
 		eCurrentState = GAMEOVER;
 	}
 
+	if (screen1.y+425 < 0)
+	{
+		screen1.SetPosition(iScreenWidth*.5f, ((iScreenHeight*.5f) + iScreenHeight));
+		screen1.Movement(fDeltaTime);
+	}
+
+	if (screen2.y+425 < 0)
+	{
+		screen1.SetPosition(iScreenWidth*.5f, ((iScreenHeight*.5f) + iScreenHeight));
+		screen2.Movement(fDeltaTime);
+	}
+
+	DrawSprite(screen1.iScreenID);
+	DrawSprite(screen2.iScreenID);
 	DrawSprite(playerPlane.iPlaneID);
 	DrawSprite(enemyPlane1.iPlaneID);
 	DrawSprite(enemyPlane2.iPlaneID);
@@ -610,6 +690,8 @@ void UpdateGamePlay()
 
 void UpdateHighScore()
 {
+	readHighScore("HighScore.txt");
+
 	playerPlane.SetPosition(iScreenWidth * .5f, 150.f);
 	enemyPlane1.SetPosition(iScreenWidth*.5f, ((iScreenHeight - (enemyPlane1.height*.5f))-2));
 	enemyPlane2.SetPosition(iScreenWidth*.4f, ((iScreenHeight - (enemyPlane2.height * .5f))-2));
@@ -618,6 +700,10 @@ void UpdateHighScore()
 	enemyPlane1.xSpeed1 = -.25f;
 	enemyPlane2.xSpeed2 = .3f;
 	enemyPlane2.ySpeed2 = -.1f;
+	enemyPlane3.xSpeed3 = -.2f;
+	enemyPlane3.ySpeed3 = -.2f;
+	enemyPlane4.xSpeed4 = .25f;
+	enemyPlane4.ySpeed4 = -.25f;
 
 	playerLives = 3;
 
@@ -649,6 +735,8 @@ void UpdateHighScore()
 
 void UpdateGameOverScreen()
 {
+	readHighScore("HighScore.txt");
+
 	float fDeltaTime = GetDeltaTime();
 
 	playerPlane.SetPosition(iScreenWidth * .5f, 150.f);
