@@ -1,0 +1,19 @@
+Main Menu-
+	Enter = Start Game
+	H = High Score
+	Esc = Quit
+
+Game Play-
+	Space bar = Fire
+	Arrow Keys = Movement
+	Brown plane = 10 points
+	Grey plane = 15 points
+	Blue plane = 20 points
+	Greeen plane = 25 points
+	E = Main Menu
+
+High Score-
+	E = Main Menu
+	Enter = Start Game
+
+*****************only one Bullet on the screen at a time, if you fire again while a bullet is on screen it automatically fires a new one while deleting the old*****************

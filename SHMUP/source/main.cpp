@@ -506,7 +506,7 @@ void UpdateGamePlay()
 	playerPlane.bulletFire();
 
 
-	/*if (CollisionCheck(enemyPlane1.Planes, playerPlane.Planes))
+	if (CollisionCheck(enemyPlane1.Planes, playerPlane.Planes))
 	{
 		playerLives -= 1;
 		playerPlane.x = iScreenWidth*.5f;
@@ -596,8 +596,8 @@ void UpdateGamePlay()
 		enemyPlane4.y = (iScreenHeight - (enemyPlane1.height*.5f)) - 30;
 		enemyPlane4.xSpeed4 *= .5f;
 		enemyPlane4.ySpeed4 *= .5f;
-		if (playerLives == 0)
-	}*/
+		if (playerLives == 0);
+	}
 
 	if (CollisionCheck(fire.Planes, enemyPlane1.Planes))
 	{
